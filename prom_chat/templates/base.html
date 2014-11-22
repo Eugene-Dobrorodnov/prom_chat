@@ -47,6 +47,23 @@
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
+          <ul class="nav pull-right navbar-nav">
+            {% if user.is_authenticated %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {{ user }}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'user:logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            {% else %}
+
+                <li><a href="#" data-toggle="modal" data-target="#modal-login">Login</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#modal-signup">Signup</a></li>
+            {% endif %}
+            </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -54,13 +71,29 @@
     <div class="container">
 
       <h1>{% block page_title %}Example Base Template{% endblock page_title %}</h1>
-
       {% block content %}
         <p>Use this document as a way to quick start any new project.</p>
       {% endblock content %}
 
     </div> <!-- /container -->
 
+    <div id="modal-login" class="modal fade" tabindex="-1" role="dialog" ari
+         a-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                {% include 'registration/login.html' %}
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-signup" class="modal fade" tabindex="-1" role="dialog" ari
+         a-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                {% include 'registration/registration.html' %}
+            </div>
+        </div>
+    </div>
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
