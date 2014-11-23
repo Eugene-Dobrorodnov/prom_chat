@@ -24,16 +24,29 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ########## DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'prom_chat',
+#         'USER': '',
+#         'PASSWORD': '',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'prom_chat',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'NAME': 'dejtdql4ps4p6s',
+        'USER': 'qwrysjmuwobllo',
+        'PASSWORD': 'qKbV1qgVGta65-VXiHVqa8wT0L',
+        'HOST': 'ec2-54-243-245-159.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
+
+
 ########## END DATABASE CONFIGURATION
 
 
