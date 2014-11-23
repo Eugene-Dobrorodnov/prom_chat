@@ -15,7 +15,6 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 
-
 $(function(){
     $('body').on('submit', 'form#login-form' ,function(e){
         e.preventDefault();
@@ -66,6 +65,71 @@ $(function(){
             error:function(data, textStatus, jqXHR){
                 $('#modal-signup .modal-content').empty();
                 $('#modal-signup .modal-content').append(data.responseText);
+            }
+        });
+    });
+
+    $('#channel-create-button').on('click', 'a', function(e){
+        e.preventDefault();
+        $.ajax({
+            async:false,
+            type:"GET",
+            url:$(this).attr('href'),
+            cache:false,
+            success:function(data, textStatus, jqXHR){
+                $('#modal-channel .modal-content').empty();
+                $('#modal-channel .modal-content').append(data);
+
+            },
+            error:function(data, textStatus, jqXHR){
+                $('#modal-channel .modal-content').empty();
+                $('#modal-channel .modal-content').append(data.responseText);
+            }
+        });
+    });
+
+    $('#channels-bar').on('click', 'a', function(e){
+        e.preventDefault();
+        $.ajax({
+            async:false,
+            type:"GET",
+            url:$(this).attr('href'),
+            cache:false,
+            success:function(data, textStatus, jqXHR){
+                $('#msg-list').empty();
+                $('#msg-list').append(data);
+
+            },
+            error:function(data, textStatus, jqXHR){
+                alert('Ops!')
+            }
+        });
+    });
+
+    $('#modal-channel').on('submit', 'form#create-channel-form' ,function(e){
+        e.preventDefault();
+
+        var $inputs = $('#create-channel-form :input');
+        var values = {};
+
+        $inputs.each(function() {
+            values[this.name] = $(this).val();
+        });
+        values['csrfmiddlewaretoken'] = csrftoken
+
+        console.log(values)
+
+        $.ajax({
+            async:false,
+            type:"POST",
+            url:$(this).attr('action'),
+            data: values,
+            cache: false,
+            success:function(data, textStatus, jqXHR){
+                $('ul#channels-bar').append(data);
+            },
+            error:function(data, textStatus, jqXHR){
+                alert('Ops!');
             }
         });
     });

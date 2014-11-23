@@ -1,0 +1,6 @@
+<form id="create-channel-form" action="{% url 'chat:create_channel' %}" method="post">
+    {% for field in form %}
+        <div>{{ field.label }}: {{ field }}</div><br>
+    {% endfor %}
+    <button class="btn btn-primary">Send</button>
+</form>

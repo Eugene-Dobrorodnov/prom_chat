@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<div class="content-main">
+</div>
+
+<div id="send-msg-box">
+<form>
+    {{ form }}
+    <button class="btn btn-primary">Send</button>
+</form>
+</div>
+
+<script src="{% static 'js/socket.js' %}" ></script>
+
+<script>
+    var channel_id = '{{ channel.id }}';
+    var user_id = '{{ request.user.id }}';
+
+    var socket = io.connect("/msg", {port: 9002});
+
+    socket.on('connect', function () {
+        socket.emit('join', channel_id);
+    });
+
+    socket.on('message', function (data) {
+
+        if (data.action == 'connect') {
+            $('#msg-list .content-main').empty();
+            $('#msg-list .content-main').append(data.result);
+        }
+
+        if (data.action == 'new_message') {
+            console.log(data)
+            $('#msg-list .content-main').append(data.result);
+        }
+
+        if (data.action == 'error') {
+            alert('Ops!');
+        }
+
+    });
+
+    $('#send-msg-box').on('submit', 'form', function (e) {
+        e.preventDefault();
+        var message = $.trim($(this).find('textarea[name="message"]').val());
+        if(message){
+            socket.emit('message', {'message': encodeURIComponent(message),
+                                    'sender': user_id,
+                                    'channel': channel_id});
+        }
+        socket.disconnect();
+    });
+
+</script>

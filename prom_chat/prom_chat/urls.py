@@ -6,6 +6,11 @@ from django.views.generic import TemplateView
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from common.views import HomeView
+from chat.views import ChatView, ChannelDetail, CreateChannelView
+
+import socketio.sdjango
+socketio.sdjango.autodiscover()
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -21,6 +26,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^user/',  include('registration.urls', namespace='user')),
+    url(r'^chat/', include('chat.urls', namespace='chat')),
+    url("^socket\.io", include(socketio.sdjango.urls)),
 )
 
 # Uncomment the next line to serve media files in dev.

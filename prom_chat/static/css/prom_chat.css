@@ -1,1 +1,37 @@
-/*! project specific CSS goes here. */
+ul#channels-bar {
+    width: 100%;
+}
+ul#channels-bar li {
+    float: none;
+    display: block;
+}
+
+#msg-list {
+    background-color: #f5f5f5;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    padding: 15px;
+}
+
+.msg-textarea {
+    margin: 0px;
+    width: 720px;
+    height: 90px;
+}
+
+#msg-list p span {
+    color: blue;
+    font-weight: bold;
+}
+
+.content-main {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #FFF;
+}
+
+.modal-content {
+    width: 400px;
+    padding: 20px;
+}

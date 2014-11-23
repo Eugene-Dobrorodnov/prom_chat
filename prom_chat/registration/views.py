@@ -4,10 +4,15 @@ from django.contrib import auth
 from django.template.loader import render_to_string
 from django.views.generic import View
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.views.decorators.csrf import csrf_exempt
 
 
 class UserRegistration(View):
     template_name = 'registration/login.html'
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserRegistration, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         form = UserCreationForm(request.POST)
@@ -25,6 +30,10 @@ class UserRegistration(View):
 
 
 class UserLoginView(View):
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserLoginView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         form = AuthenticationForm()

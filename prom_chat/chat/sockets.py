@@ -4,8 +4,8 @@ import pika
 import gevent
 import pickle
 
-from django.core.paginator import Paginator
-from django.conf import settings
+from django.template.loader import render_to_string
+
 from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
 from socketio.sdjango import namespace
@@ -36,14 +36,15 @@ class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
     def log(self, message):
         self.logger.info("[{0}] {1}".format(self.socket.sessid, message))
 
-    def on_join(self, thread, page_size=10, page=1):
-        self.room = thread
+    def on_join(self, channel, page_size=10, page=1):
+        self.room = channel
         response = dict()
 
-        messages = Message.objects.filter(thread=thread)
+        messages = Message.objects.filter(channel=channel)
+        result = render_to_string('chat/msg_list.html', {'messages': messages})
         response['action'] = 'connect'
-        response['thread_id'] = thread
-
+        response['thread_id'] = channel
+        response['result'] = result
         self.broadcast_event_only_me('message', response)
         return True
 
@@ -51,30 +52,27 @@ class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
         self.log('User message: {0}'.format(message))
         data = dict()
         data['message'] = urllib.unquote(message['message'].encode('utf-8')).decode("utf-8")
-        data['sender'] = message['sender']
-        data['thread'] = message['thread']
-        data['attachments'] = message.get('attachments', [])
 
-        form = MessageForm(data=data)
+        form = MessageForm(data)
 
         if form.is_valid():
-            form.save()
+            object = form.save(commit=False)
+            object.sender_id = message['sender']
+            object.channel_id = message['channel']
+            object.save()
             message.clear()
-            message['msg'] = form.data
             message['action'] = 'new_message'
-            self.broadcast_event('message', message)
-            return True
+            message['result'] = render_to_string('chat/msg_detail.html',
+                                                 {'msg': object})
+        else:
+            message.clear()
+            message['action'] = 'error'
 
-    def on_mark_is_read(self, message_id, user_id):
-        message = dict()
-
-        try:
-            msg = Message.objects.get(pk=message_id)
-            if msg.sender.id != int(user_id):
-                msg.is_read = True
-                msg.save()
-                message['action'] = 'is_read'
-                message['message_id'] = message_id
-        except:
-            pass
         self.broadcast_event('message', message)
+        return True
+
+    # def recv_disconnect(self):
+    #     self.log('Disconnected')
+    #     self.connection.close()
+    #     self.disconnect(silent=True)
+    #     return True
