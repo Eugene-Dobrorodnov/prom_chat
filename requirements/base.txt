@@ -1,4 +1,7 @@
 Django==1.6.5
+django-debug-toolbar==1.2.1
+Sphinx==1.2.2
+coverage==3.7.1
 bpython==0.13
 django-braces==1.4.0
 django-model-utils==2.0.3
