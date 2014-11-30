@@ -1,4 +1,5 @@
 import json
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import auth
 from django.template.loader import render_to_string
@@ -43,7 +44,8 @@ class UserLoginView(View):
 
         if user is not None and user.is_active:
             auth.login(request, user)
-            msg = json.dumps({'status': 'ok'})
+            url = reverse('chat:home')
+            msg = json.dumps({'url': url})
             return HttpResponse(msg)
         else:
             html = render_to_string('registration/login.html',

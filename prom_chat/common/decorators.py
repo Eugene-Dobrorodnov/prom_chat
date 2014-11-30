@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 from functools import wraps
 
-from django.http import HttpResponseBadRequest, HttpResponse
-from django.template.loader import render_to_string
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 
 
 def ajax_required(func):
@@ -14,7 +13,7 @@ def ajax_required(func):
     return wrapper
 
 
-def login_required_ajax(function=None, redirect_field_name=None):
+def login_redirect(function=None, redirect_field_name=None):
     """
     Just make sure the user is authenticated to access a certain ajax view
 
@@ -26,8 +25,7 @@ def login_required_ajax(function=None, redirect_field_name=None):
             if request.user.is_authenticated():
                 return view_func(request, *args, **kwargs)
             else:
-                html = render_to_string('login_form.html')
-                return HttpResponse(html, status=401)
+                return HttpResponseRedirect('/')
         return _wrapped_view
 
     if function is None:

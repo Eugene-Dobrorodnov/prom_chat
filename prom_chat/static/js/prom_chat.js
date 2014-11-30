@@ -34,8 +34,7 @@ $(function(){
             data: values,
             cache: false,
             success:function(data, textStatus, jqXHR){
-                $('#modal-login .modal-content').empty();
-                $('#modal-login .modal-content').append(data);
+                window.location = '/chat';
             },
             error:function(data, textStatus, jqXHR){
                 $('#modal-login .modal-content').empty();
@@ -60,8 +59,7 @@ $(function(){
             data: values,
             cache: false,
             success:function(data, textStatus, jqXHR){
-                $('#modal-signup .modal-content').empty();
-                $('#modal-signup .modal-content').append(data);
+                window.location = '/chat';
             },
             error:function(data, textStatus, jqXHR){
                 $('#modal-signup .modal-content').empty();

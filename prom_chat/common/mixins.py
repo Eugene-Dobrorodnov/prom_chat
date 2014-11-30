@@ -1,12 +1,12 @@
 from django.utils.decorators import method_decorator
-from common.decorators import login_required_ajax, ajax_required
+from common.decorators import login_redirect, ajax_required
 
 
-class LoginRequiredAjaxMixin(object):
+class LoginRedirectMixin(object):
 
-    @method_decorator(login_required_ajax)
+    @method_decorator(login_redirect)
     def dispatch(self, *args, **kwargs):
-        return super(LoginRequiredAjaxMixin, self).dispatch(*args, **kwargs)
+        return super(LoginRedirectMixin, self).dispatch(*args, **kwargs)
 
 
 class AjaxRequiredMixin(object):

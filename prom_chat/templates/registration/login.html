@@ -1,4 +1,9 @@
 <form id="login-form" action="{% url 'user:login' %}" method="post">
-    {{ login_form }}
+    {% for field in login_form %}
+        {{ field.label_tag }}
+        {{ field }}
+        <br>
+    {% endfor %}
+    <br>
     <button class="btn btn-primary">Login</button>
 </form>

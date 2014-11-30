@@ -1,4 +1,10 @@
 <form id="signup-form" action="{% url 'user:signup' %}" method="post">
-    {{ signup_form }}
+    {% for field in signup_form %}
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {{ field.errors }}
+        <br>
+        <br>
+    {% endfor %}
     <button class="btn btn-primary">Signup</button>
 </form>

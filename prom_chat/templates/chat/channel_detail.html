@@ -8,7 +8,6 @@
     <button class="btn btn-primary">Send</button>
 </form>
 </div>
-<button id="s-ex">Exit</button>
 
 <script src="{% static 'js/socket.js' %}" ></script>
 <script>
@@ -31,7 +30,6 @@ $(function(){
         }
 
         if (data.action == 'new_message') {
-            console.log(data)
             $('#msg-list .content-main').append(data.result);
         }
 
