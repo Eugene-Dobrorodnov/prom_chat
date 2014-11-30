@@ -24,6 +24,17 @@ def get_env_setting(setting):
 ALLOWED_HOSTS = []
 ########## END HOST CONFIGURATION
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dejtdql4ps4p6s',
+        'USER': 'qwrysjmuwobllo',
+        'PASSWORD': 'qKbV1qgVGta65-VXiHVqa8wT0L',
+        'HOST': 'ec2-54-243-245-159.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
+
 ########## EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
