@@ -26,6 +26,24 @@ class BroadcastEventOnlyMyMixin(BroadcastMixin):
             if socket is self.socket:
                 socket.send_packet(pkt)
 
+    def emit_to_room_with_me(self, room, event, *args):
+        """This is sent to all in the room (in this particular Namespace)"""
+        pkt = dict(type="event",
+                   name=event,
+                   args=args,
+                   endpoint=self.ns_name)
+        room_name = self._get_room_name(room)
+        for sessid, socket in self.socket.server.sockets.iteritems():
+            # print socket.session['rooms']
+            # print '======================'
+            # print room_name
+            # print event
+            # args.update({sessid: socket.session['rooms']})
+            if 'rooms' not in socket.session:
+                continue
+            if room_name in socket.session['rooms']:
+                socket.send_packet(pkt)
+
 
 @namespace('/msg')
 class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
@@ -36,21 +54,23 @@ class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
     def log(self, message):
         self.logger.info("[{0}] {1}".format(self.socket.sessid, message))
 
-    def on_join(self, channel, page_size=10, page=1):
-        self.room = channel
-        response = dict()
+    def on_join(self, room, channel_id):
+        self.room = room
+        self.join(room)
 
-        messages = Message.objects.filter(channel=channel)
+        response = {}
+
+        messages = Message.objects.filter(channel=channel_id)
         result = render_to_string('chat/msg_list.html', {'messages': messages})
         response['action'] = 'connect'
-        response['thread_id'] = channel
+        response['thread_id'] = channel_id
         response['result'] = result
         self.broadcast_event_only_me('message', response)
         return True
 
     def on_message(self, message):
         self.log('User message: {0}'.format(message))
-        data = dict()
+        data = {}
         data['message'] = urllib.unquote(message['message'].encode('utf-8')).decode("utf-8")
 
         form = MessageForm(data)
@@ -61,6 +81,7 @@ class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
             object.channel_id = message['channel']
             object.save()
             message.clear()
+            message['room'] = self._get_room_name(object.channel_id)
             message['action'] = 'new_message'
             message['result'] = render_to_string('chat/msg_detail.html',
                                                  {'msg': object})
@@ -68,11 +89,5 @@ class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
             message.clear()
             message['action'] = 'error'
 
-        self.broadcast_event('message', message)
+        self.emit_to_room_with_me(object.channel_id, 'message', message)
         return True
-
-    # def recv_disconnect(self):
-    #     self.log('Disconnected')
-    #     self.connection.close()
-    #     self.disconnect(silent=True)
-    #     return True

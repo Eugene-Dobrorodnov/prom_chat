@@ -8,21 +8,23 @@
     <button class="btn btn-primary">Send</button>
 </form>
 </div>
+<button id="s-ex">Exit</button>
 
 <script src="{% static 'js/socket.js' %}" ></script>
-
 <script>
+
+$(function(){
     var channel_id = '{{ channel.id }}';
     var user_id = '{{ request.user.id }}';
-
     var socket = io.connect("/msg", {port: 9002});
 
     socket.on('connect', function () {
-        socket.emit('join', channel_id);
+        socket.emit('join', channel_id, channel_id);
+        console.log('connect to msg_' + channel_id)
     });
 
     socket.on('message', function (data) {
-
+        console.log(data);
         if (data.action == 'connect') {
             $('#msg-list .content-main').empty();
             $('#msg-list .content-main').append(data.result);
@@ -36,18 +38,22 @@
         if (data.action == 'error') {
             alert('Ops!');
         }
-
     });
 
     $('#send-msg-box').on('submit', 'form', function (e) {
         e.preventDefault();
+
         var message = $.trim($(this).find('textarea[name="message"]').val());
         if(message){
             socket.emit('message', {'message': encodeURIComponent(message),
                                     'sender': user_id,
                                     'channel': channel_id});
         }
-        socket.disconnect();
     });
 
+
+    $('body').on('click', '#s-ex', function() {
+        //socket.disconnect();
+    });
+});
 </script>

@@ -15,6 +15,7 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 
+
 $(function(){
     $('body').on('submit', 'form#login-form' ,function(e){
         e.preventDefault();
@@ -90,6 +91,7 @@ $(function(){
 
     $('#channels-bar').on('click', 'a', function(e){
         e.preventDefault();
+
         $.ajax({
             async:false,
             type:"GET",
@@ -116,8 +118,6 @@ $(function(){
             values[this.name] = $(this).val();
         });
         values['csrfmiddlewaretoken'] = csrftoken
-
-        console.log(values)
 
         $.ajax({
             async:false,

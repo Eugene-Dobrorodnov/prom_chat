@@ -24,10 +24,10 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
+    url("^socket\.io", include(socketio.sdjango.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^user/',  include('registration.urls', namespace='user')),
     url(r'^chat/', include('chat.urls', namespace='chat')),
-    url("^socket\.io", include(socketio.sdjango.urls)),
 )
 
 # Uncomment the next line to serve media files in dev.
