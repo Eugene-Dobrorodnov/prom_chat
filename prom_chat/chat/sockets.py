@@ -1,5 +1,8 @@
 import logging
 import urllib
+import re
+import metadata_parser
+import json
 import pika
 import gevent
 import pickle
@@ -85,6 +88,22 @@ class MsgNamespace(BaseNamespace, RoomsMixin, BroadcastEventOnlyMyMixin):
             message['action'] = 'new_message'
             message['result'] = render_to_string('chat/msg_detail.html',
                                                  {'msg': object})
+            # parse url
+            match = re.search(r'http://[a-zA-Z0-9]+\.[-a-zA-Z0-9_]+/*', object.message)
+            if match:
+                try:
+                    url = metadata_parser.MetadataParser(url=object.message)
+                    meta = url.metadata.get('meta')
+                    page = url.metadata.get('page')
+                    img = meta.get('og:image', None)
+                    title =  urllib.unquote(page['title'].encode('utf-8')).decode("utf-8")
+                    message['result'] = render_to_string('chat/url_parse.html',
+                                                        {'img': img,
+                                                         'title':title,
+                                                         'obj': object})
+                except:
+                    pass
+
         else:
             message.clear()
             message['action'] = 'error'

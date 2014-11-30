@@ -4,15 +4,16 @@ from django.template.loader import render_to_string
 
 from chat.models import Channel
 from chat.forms import MessageForm, ChannelForm
+from common.mixins import AjaxRequiredMixin, LoginRedirectMixin
 
 
-class ChatView(ListView):
+class ChatView(LoginRedirectMixin, ListView):
     model = Channel
     context_object_name = 'channels'
     template_name = 'chat/channels_list.html'
 
 
-class ChannelDetail(View):
+class ChannelDetail(LoginRedirectMixin, AjaxRequiredMixin, View):
     template_name = 'chat/channel_detail.html'
 
     def get(self, request, *args, **kwargs):
@@ -26,7 +27,7 @@ class ChannelDetail(View):
         return HttpResponse(html)
 
 
-class CreateChannelView(CreateView):
+class CreateChannelView(LoginRedirectMixin, AjaxRequiredMixin, CreateView):
     model = Channel
     form_class = ChannelForm
 
